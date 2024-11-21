@@ -11,9 +11,7 @@ pip install librouteros
 '''
 
 # Importacion de librerias a utilizar
-import os, sys, csv, datetime, time, paramiko
-from librouteros import connect
-from librouteros.exceptions import TrapError
+import os, sys, csv, datetime, time
 
 # Verificacion de la existencia de los archivos
 def verificar_archivos_csv(BaseDatos, Equipos):
@@ -77,6 +75,7 @@ def reporte(Resultado):
 
 # Creacion de backup de un router o sw Mikrotic
 def backup_mk(therouter, theuser, thepassword, theport, theroute, archivo_bkp):
+  import paramiko
   """Copia archivos a un servidor remoto por SSH.
   Args:
     therouter: La dirección IP o nombre de host del servidor remoto.
@@ -94,14 +93,37 @@ def backup_mk(therouter, theuser, thepassword, theport, theroute, archivo_bkp):
   ip: 192.168.78.53
   '''
   try:
-    Coneccion = connect(username=theuser, password=thepassword, host=therouter, port=theport)
-    Backup = Coneccion.call("/system/backup", {"save": True, "name": archivo_bkp})
-    Coneccion.call("/system/backup/download", {"id": Backup[0]['id'], "path": theroute})
+    # Crea un cliente SSH
+    ssh = paramiko.SSHClient()
+    # Agrego la coneccion ssh como de confianza
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
+    # Coneccion al servidor
+    ssh.connect(therouter, port=theport, username=theuser, password=thepassword)
+    # Creo el backup y copio el archivo generado
+    archivo_origen = archivo_bkp + ".backup"
+    stdin, stdout, stderr = ssh.exec_command(f"/system backup save dont-encrypt=yes name={archivo_bkp} && scp {theuser}@{therouter}:/{archivo_origen} {theroute}")
+    print(stdout.read().decode())
+    # ssh.exec_command(f"put ${archivo_bkp}' | tail -n 1 | tr -d '\r'")
+    stdin, stdout, stderr = ssh.exec_command("ls -l")
+    print(stdout.read().decode())
+    # Crea un cliente SFTP
+    # sftp = ssh.open_sftp()
+    # Copio los archivos de backup
+    # archivo_origen = archivo_bkp + ".backup"
+    # sftp.get(archivo_origen, theroute)
+    print(f"Archivo '{archivo_origen}' copiado a '{theroute}' correctamente.")
+    # archivo_origen = archivo_bkp + ".rsc"
+    # sftp.get(archivo_origen, theroute)
+    # print(f"Archivo '{archivo_origen}' copiado a '{theroute}' correctamente.")
+    # Cierra la conexión SFTP y SSH
+    sftp.close()
+    ssh.close()
     return ("OK")
   # Manejo de errores
-  except TrapError as Macana:
-    return (f"Error en Mikrotik API: {Macana}")
   except Exception as Macana:
+    # Cierra la conexión SFTP y SSH
+    sftp.close()
+    ssh.close()
     return (f"Error general: {Macana}")
 # FIN de la creacion del backup
 
@@ -145,7 +167,7 @@ if __name__ == "__main__":
           theuser = datos.get("Usuario")
           theclient = datos.get("Cliente")
           theport = datos.get("Puerto")
-          theroute = os.getcwd() + "/" + datos.get("Ruta") + "/" + thename
+          theroute = os.getcwd() + "\\" + datos.get("Ruta") + "\\" + thename
           # Imprimo las variables
           print()
           print("--------------------")
@@ -165,7 +187,7 @@ if __name__ == "__main__":
         print()
         print("Creando backup...")
         # Obtengo la fecha y hora actual
-        archivo_bkp = thename + "-" + datetime.datetime.now().strftime("%Y-%m-%d@%H-%M-%S")
+        archivo_bkp = thename + "-" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         # Llama a la funcion para hacer el backup y guarda en la DB si se realizo bien o no el backup
         reporte(backup_mk(therouter, theuser, thepassword, theport, theroute, archivo_bkp))
   # Manejo de errores
