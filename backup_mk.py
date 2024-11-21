@@ -99,18 +99,16 @@ def backup_mk(therouter, theuser, thepassword, theport, theroute, archivo_bkp):
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
     # Coneccion al servidor
     ssh.connect(therouter, port=theport, username=theuser, password=thepassword)
-    # Creo el backup y copio el archivo generado
-    archivo_origen = archivo_bkp + ".backup"
-    stdin, stdout, stderr = ssh.exec_command(f"/system backup save dont-encrypt=yes name={archivo_bkp} && scp {theuser}@{therouter}:/{archivo_origen} {theroute}")
+    # Creo el backup
+    stdin, stdout, stderr = ssh.exec_command(f"/system backup save dont-encrypt=yes name={archivo_bkp}")
     print(stdout.read().decode())
-    # ssh.exec_command(f"put ${archivo_bkp}' | tail -n 1 | tr -d '\r'")
     stdin, stdout, stderr = ssh.exec_command("ls -l")
     print(stdout.read().decode())
     # Crea un cliente SFTP
-    # sftp = ssh.open_sftp()
+    sftp = ssh.open_sftp()
     # Copio los archivos de backup
-    # archivo_origen = archivo_bkp + ".backup"
-    # sftp.get(archivo_origen, theroute)
+    archivo_origen = archivo_bkp + ".backup"
+    sftp.get(archivo_origen, theroute)
     print(f"Archivo '{archivo_origen}' copiado a '{theroute}' correctamente.")
     # archivo_origen = archivo_bkp + ".rsc"
     # sftp.get(archivo_origen, theroute)
