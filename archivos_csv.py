@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-
+"""
+Creado por Mikiztly https://github.com/Mikiztly
+Por ahora verifica que exista un archivo csv y tenga los encabezados declarados en el argumento "Encabezados"
+"""
 # Importacion de librerias a utilizar
 import os, sys, csv
 
@@ -23,13 +26,12 @@ def verificar_archivo_csv(Archivo: str, Encabezados: list):
       EncabezadosTmp = next(lector_csv)
       if EncabezadosTmp != Encabezados:
         return f"Error: El archivo '{Archivo}' no tiene los encabezados requeridos.\n Encabezados encontrados: {EncabezadosTmp}"
-    print(EncabezadosTmp)
     return True
   except Exception as Macana:
     return f"Error no manejado con el archivo CSV:\n {Macana}"
 # FIN de la funcion para verificar los archivos
 
-# Abre el archivo con los parametros de la DB y los guarda en una coleccion
+# Abre el archivo con los parametros de la DB y los guarda en una coleccion (SIN REVISAR, TODAVIA NO LLEGUE A ESTA PARTE DEL PROYECTO)
 def parametros_db(Ruta_DB):
   """Abre un archivo CSV y guarda los Parametros de la primera fila en una coleccion.
     Devuelve:
@@ -56,7 +58,7 @@ def parametros_db(Ruta_DB):
 # Programa principal para pruebas
 if __name__ == "__main__":
   # Comprobamos que el archivo exista y sea accesible
-  Resultado = verificar_archivo_csv(sys.argv[1], ["servidor", "usuario", "contraseña", "base_datos"])
+  Resultado = verificar_archivo_csv(sys.argv[1], ["Servidor", "Usuario", "Contrasegna", "Base_Datos"])
   if Resultado != True:
     print(Resultado)
   else:

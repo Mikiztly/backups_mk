@@ -82,7 +82,7 @@ def backup_mk(therouter, theuser, thepassword, theport, theroute, archivo_bkp):
     return (f"Error general: {Macana}")
 # FIN de la creacion del backup
 
-# Programa principal
+# Para pruebas individuales
 if __name__ == "__main__":
   # Verificacion que se pasen los dos argumentos y sean archivos csv
   if len(sys.argv) != 3:
@@ -126,12 +126,12 @@ if __name__ == "__main__":
           # Imprimo las variables
           print()
           print("--------------------")
-          print(f"Router: {therouter} (lenght: {len(therouter)})")
-          print(f"Password: {thepassword} (lenght: {len(thepassword)}))")
-          print(f"Nombre: {thename} (lenght: {len(thename)})")
-          print(f"Usuario: {theuser} (lenght: {len(theuser)})")
-          print(f"Cliente: {theclient} (lenght: {len(theclient)})")
-          print(f"Puerto: {theport} (lenght: {len(theport)})")
+          print(f"Router: {therouter}")
+          print(f"Password: {thepassword}")
+          print(f"Nombre: {thename}")
+          print(f"Usuario: {theuser}")
+          print(f"Cliente: {theclient}")
+          print(f"Puerto: {theport}")
           print(f"Ruta: {theroute}")
         else:
           print(f"El archivo '{Equipos}' no tiene encabezados.")
