@@ -1,65 +1,7 @@
 #!/usr/bin/python3
 
-# Script de Cesar para cambiar los datos de los routers MK
-# https://github.com/cesarsalva91/NeMikroPy
-
-'''
-Modulos que se deben instalar para que funcione:
-sudo apt install python3-pip
-En Ubuntu 24.04 tuve que cambiar la configuracion de python:
-python3 -m pip config set global.break-system-packages true
-
-Despues de cambiar esa configuracion instalar todos los modulos:
-pip install paramiko mysql-connector-python
-
-pip install librouteros
-'''
-
 # Importacion de librerias a utilizar
 import os, sys, csv, datetime, time
-
-# Verificacion de la existencia de los archivos
-def verificar_archivos_csv(BaseDatos, Equipos):
-  """Verifica si dos archivos CSV existen y son accesibles.
-    Args:
-      BaseDatos: La ruta al primer archivo CSV.
-      Equipos: La ruta al segundo archivo CSV.
-    Devuelve:
-      True si ambos archivos existen y son accesibles, False en caso contrario.
-      Imprime un mensaje de error si alguno de los archivos no existe o no es accesible.
-    """
-  if not os.path.exists(BaseDatos) or not os.access(BaseDatos, os.R_OK):
-    print(f"Error: El archivo '{BaseDatos}' no existe o no es accesible.")
-    return False
-  if not os.path.exists(Equipos) or not os.access(Equipos, os.R_OK):
-    print(f"Error: El archivo '{Equipos}' no existe o no es accesible.")
-    return False
-  return True
-# FIN de la funcion para verificar los archivos
-
-# Abre el archivo con los parametros de la DB y los guarda en una coleccion
-def parametros_db(Ruta_DB):
-  """Abre un archivo CSV y guarda los Parametros de la primera fila en una coleccion.
-    Devuelve:
-      Una coleccion con los valores de los Parametros, o None si ocurre un error.
-      Imprime un mensaje de error si el archivo no se puede abrir o si está vacío.
-    """
-  try:
-    # Se abre el archivo
-    with open(Ruta_DB, 'r', newline='', encoding='utf-8') as Tmp_DB:
-      Tmp_Reg = csv.reader(Tmp_DB)
-      Parametros = next(Tmp_Reg, None)  # Lee la primera fila
-      # Si el archivo esta vacio Muestra el mensaje de error
-      if Parametros is None:
-        print(f"Error: El archivo CSV '{Ruta_DB}' está vacío.")
-        return None
-      # Como se pudo leer todo devuelve los parametros
-      return Parametros
-  # Manejo de errores
-  except Exception as Macana:
-    print(f"Error al abrir o leer el archivo CSV: {Macana}")
-    return None
-# FIN de la funcion para extraer los parametros de la DB
 
 # Guardo en la DB el resultado de hacer el backup
 def reporte(Resultado):
