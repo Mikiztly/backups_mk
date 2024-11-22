@@ -22,7 +22,7 @@ client = paramiko.SSHClient()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 try:
     # Conectar al servidor
-    client.connect(hostname, port=port, username=username, password=password)
+    client.connect(hostname, port=port, username=username, password=password,look_for_keys=False)
     print("Conexión SSH exitosa")
     # Ejecutar un comando
     stdin, stdout, stderr = client.exec_command("ls -l")

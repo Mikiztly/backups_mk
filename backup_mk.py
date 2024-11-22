@@ -6,7 +6,12 @@
 '''
 Modulos que se deben instalar para que funcione:
 sudo apt install python3-pip
-pip install paramiko
+En Ubuntu 24.04 tuve que cambiar la configuracion de python:
+python3 -m pip config set global.break-system-packages true
+
+Despues de cambiar esa configuracion instalar todos los modulos:
+pip install paramiko mysql-connector-python
+
 pip install librouteros
 '''
 
@@ -98,9 +103,13 @@ def backup_mk(therouter, theuser, thepassword, theport, theroute, archivo_bkp):
     # Agrego la coneccion ssh como de confianza
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
     # Coneccion al servidor
-    ssh.connect(therouter, port=theport, username=theuser, password=thepassword)
-    # Creo el backup
+    ssh.connect(therouter, port=theport, username=theuser, password=thepassword,look_for_keys=False)
+    stdin, stdout, stderr = ssh.exec_command("system/identity/print")
+    archivo_bkp = stdout.read().decode() + "-" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    # Creo los archivos de backup
     stdin, stdout, stderr = ssh.exec_command(f"/system backup save dont-encrypt=yes name={archivo_bkp}")
+    print(stdout.read().decode())
+    stdin, stdout, stderr = ssh.exec_command(f"/export file={archivo_bkp}")
     print(stdout.read().decode())
     stdin, stdout, stderr = ssh.exec_command("ls -l")
     print(stdout.read().decode())
@@ -108,15 +117,21 @@ def backup_mk(therouter, theuser, thepassword, theport, theroute, archivo_bkp):
     sftp = ssh.open_sftp()
     # Copio los archivos de backup
     archivo_origen = archivo_bkp + ".backup"
-    sftp.get(archivo_origen, theroute)
+    archivo_destino = theroute + "/" + archivo_origen
+    sftp.get(archivo_origen, archivo_destino)
     print(f"Archivo '{archivo_origen}' copiado a '{theroute}' correctamente.")
-    # archivo_origen = archivo_bkp + ".rsc"
-    # sftp.get(archivo_origen, theroute)
-    # print(f"Archivo '{archivo_origen}' copiado a '{theroute}' correctamente.")
+    stdin, stdout, stderr = ssh.exec_command(f"rm {archivo_origen}")
+    print(stdout.read().decode())
+    archivo_origen = archivo_bkp + ".rsc"
+    archivo_destino = theroute + "/" + archivo_origen
+    sftp.get(archivo_origen, archivo_destino)
+    print(f"Archivo '{archivo_origen}' copiado a '{theroute}' correctamente.")
+    stdin, stdout, stderr = ssh.exec_command(f"rm {archivo_origen}")
+    print(stdout.read().decode())
     # Cierra la conexión SFTP y SSH
     sftp.close()
     ssh.close()
-    return ("OK")
+    return ("Backup realizado correctamente")
   # Manejo de errores
   except Exception as Macana:
     # Cierra la conexión SFTP y SSH
@@ -165,7 +180,7 @@ if __name__ == "__main__":
           theuser = datos.get("Usuario")
           theclient = datos.get("Cliente")
           theport = datos.get("Puerto")
-          theroute = os.getcwd() + "\\" + datos.get("Ruta") + "\\" + thename
+          theroute = os.getcwd() + "/" + datos.get("Ruta") + "/" + thename
           # Imprimo las variables
           print()
           print("--------------------")
