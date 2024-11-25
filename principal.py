@@ -47,10 +47,10 @@ try:
     # Recorro cada fila del archivo
     for XLoop in Tmp_Reg:
       # Ya se hizo la verificacion del archivo por lo Obtengo los encabezados
-      datos = dict(zip(Encabezados, XLoop))
+      Datos = dict(zip(Encabezados, XLoop))
       # Llamo a la funcion para hacer el backup y obtengo si se realizo bien el backup o que error tuvo
-      resultado = maneja_mk.backup_mk(datos.get("Nombre"), datos.get("Equipo"), datos.get("Puerto"), datos.get("Usuario"), datos.get("Contrasegna"), datos.get("Ruta"), "Backup realizado correctamente")
-      print(resultado)
+      Resultado = maneja_mk.backup_mk(Datos.get("Nombre"), Datos.get("Equipo"), Datos.get("Puerto"), Datos.get("Usuario"), Datos.get("Contrasegna"), Datos.get("Ruta"), "Backup realizado correctamente")
+      print(Resultado)
 
 # Paso algo que no tuve en cuenta, lo informo
 except Exception as Macana:

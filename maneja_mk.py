@@ -2,7 +2,7 @@
 """
 Creado por Mikiztly https://github.com/Mikiztly
 
-Por ahora hace un backup del equipo que se paso con los parametros y descarga dos archivos ( .backup y .rsc) en la ruta especificada
+Por ahora hace un backup del equipo que se paso con los parametros y descarga dos archivos ( .backup y .rsc) en la ruta especificada en el argumento "Ruta"
 Los parametros se deben pasar como un diccionario donde las claves deben ser:
 ["Nombre", "Equipo", "Puerto", "Usuario", "Contrasegna", "Cliente", "Ruta"]
 """
@@ -19,10 +19,11 @@ def backup_mk(Nombre: str, Equipo: str, Puerto: int, Usuario: str, Contrasegna: 
     Puerto: El puerto SSH (por defecto 22).
     Usuario: El nombre de usuario para la conexión SSH.
     Contrasegna: La contraseña para la conexión SSH.
-    Ruta: La ruta en el servidor donde se copiarán los archivos.
+    Ruta: La carpeta del servidor donde se copiaran los archivos.
     Mensaje: Mensaje a devolver si se realiza bien el backup
   Devuelve:
-    El mesaje pasado como parametro si se realiza bien el backup, en caso contrario devuelve un mensaje de error
+    Si se realizó correctamente el backup devuelve el mensaje pasado como el argumento "Mensaje"
+    Si hay algún error devuelve un mensaje de error con la descripción del mismo
   """
   # Captura de errores porsiaca
   try:
@@ -121,8 +122,8 @@ if __name__ == "__main__":
         print()
         print("Creando backup...")
         # Llama a la funcion para hacer el backup y muestra si se realizo o que error tuvo
-        resultado = backup_mk(Nombre, Equipo, Puerto, Usuario, Contrasegna, Ruta, "Backup realizado correctamente")
-        print(resultado)
+        Resultado = backup_mk(Nombre, Equipo, Puerto, Usuario, Contrasegna, Ruta, "Backup realizado correctamente")
+        print(Resultado)
   # Manejo de errores
   except Exception as Macana:
     print(f"Error en el programa principal: {Macana}")
