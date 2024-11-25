@@ -13,7 +13,7 @@ Se ejecuta pasando como argumentos dos archivos csv:
 Verificar la existencia de los archivos y después abrirlos para guardar cada campo en variables
 """
 # Importacion de librerias a utilizar
-import sys, archivos_csv
+import sys, csv, archivos_csv, maneja_mk
 
 # Por si acaso tambien hago captura de errores
 try:
@@ -39,6 +39,19 @@ try:
     print("  Encabezados requeridos: ['Nombre', 'Equipo', 'Puerto', 'Usuario', 'Contrasegna', 'Cliente', 'Ruta']")
     sys.exit(1)
 
+  # Abro el archivo pasado como segundo parametro
+  with open(sys.argv[2], 'r', newline='', encoding='utf-8') as Tmp_Equipos:
+    Tmp_Reg = csv.reader(Tmp_Equipos)
+    # Lee la primera fila para acceder a los campos por nombre
+    Encabezados = next(Tmp_Reg, None) 
+    # Recorro cada fila del archivo
+    for XLoop in Tmp_Reg:
+      # Ya se hizo la verificacion del archivo por lo Obtengo los encabezados
+      datos = dict(zip(Encabezados, XLoop))
+      # Llamo a la funcion para hacer el backup y obtengo si se realizo bien el backup o que error tuvo
+      resultado = maneja_mk.backup_mk(datos.get("Nombre"), datos.get("Equipo"), datos.get("Puerto"), datos.get("Usuario"), datos.get("Contrasegna"), datos.get("Ruta"), "Backup realizado correctamente")
+      print(resultado)
+
 # Paso algo que no tuve en cuenta, lo informo
 except Exception as Macana:
-  print(f"Error no manejado con el archivo CSV:\n {Macana}")
+  print(f"Error no manejado:\n {Macana}")
