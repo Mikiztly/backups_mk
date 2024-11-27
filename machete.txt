@@ -1,0 +1,23 @@
+Nombre,Router,Puerto,Usuario,Password,Cliente,Ruta
+MK_PRUEBAS,192.168.78.53,22,admin,admin,Nubicom,backups_MK_NBC
+
++---------+--------------+------+-----+---------+-------+
+| Field   | Type         | Null | Key | Default | Extra |
++---------+--------------+------+-----+---------+-------+
+| Status  | varchar(150) | NO   |     | NULL    |       |
+| Fecha   | date         | NO   |     | NULL    |       |
+| Equipo  | varchar(25)  | NO   |     | NULL    |       |
+| Cliente | varchar(25)  | NO   |     | NULL    |       |
++---------+--------------+------+-----+---------+-------+
+
+CREATE TABLE Backup_logs (
+	Status VARCHAR(150) NOT NULL,
+	Fecha DATE NOT NULL,
+	Equipo VARCHAR(25) NOT NULL,
+	Cliente VARCHAR(25) NOT NULL
+)
+
+# Prueba del prograna en python para manejar equipos MK
+01 00 * * * python3 ~/backups_mk/principal.py db_server.csv equipos.csv
+
+/etc/init.d/cron reload

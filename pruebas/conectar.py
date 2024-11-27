@@ -24,18 +24,21 @@ try:
     # Conectar al servidor
     client.connect(hostname, port=port, username=username, password=password,look_for_keys=False)
     print("Conexión SSH exitosa")
+    # Borro backups viejos
+    """ stdin, stdout, stderr = client.exec_command("rm MK_PRUEBAS-20241127-190428.rsc")
+    print("Salida del comando:")
+    print(stdout.read().decode()) """
     # Ejecutar un comando
     stdin, stdout, stderr = client.exec_command("ls -l")
     print("Salida del comando:")
     print(stdout.read().decode())
-    # Manejo de errores
     # Iniciar una sesión SFTP
-    sftp = client.open_sftp()
+    #sftp = client.open_sftp()
     # Descargar el archivo
-    print(f"Descargando {remote_path} desde el MikroTik...")
-    sftp.get(remote_path, local_path)
-    print(f"Archivo descargado exitosamente en {local_path}")
-    sftp.close()
+    #print(f"Descargando {remote_path} desde el MikroTik...")
+    #sftp.get(remote_path, local_path)
+    #print(f"Archivo descargado exitosamente en {local_path}")
+    #sftp.close()
     # Manejo de errores
     errores = stderr.read().decode()
     if errores:

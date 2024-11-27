@@ -2,17 +2,17 @@
 import mysql.connector
 from mysql.connector import Error
 
-def conectar_db(host, usuario, password, base_datos):
+def conectar_db(Host, Usuario, Contrasegna, Base_Datos):
   try:
     # Conexión a la base de datos
-    conexion = mysql.connector.connect(host=host, user=usuario, password=password, database=base_datos)
-    cursor = conexion.cursor()
+    Conexion = mysql.connector.connect(host=Host, user=Usuario, password=Contrasegna, database=Base_Datos)
+    Puntero = Conexion.cursor()
     # Verificar si existe la tabla Equipos
-    cursor.execute("SHOW TABLES LIKE 'Equipos'")
-    existe_tabla = cursor.fetchone()
+    Puntero.execute("SHOW TABLES LIKE 'Equipos'")
+    Existe_Tabla = Puntero.fetchone()
     # Si no existe la tabla, crearla
-    if not existe_tabla:
-      cursor.execute("""
+    if not Existe_Tabla:
+      Puntero.execute("""
         CREATE TABLE Equipos (
           Nombre VARCHAR(25) NOT NULL,
           Router VARCHAR(15) NOT NULL,
@@ -26,8 +26,7 @@ def conectar_db(host, usuario, password, base_datos):
         )
       """)
     # Cerrar el cursor y la conexión
-    cursor.close()
-    conexion.close()
+    Puntero.close()
     return True
   # Manejo de errores
   except Error as Macana:

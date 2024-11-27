@@ -1,2 +1,2 @@
-Nombre,Equipo,Puerto,Usuario,Contrasegna,Cliente,Ruta
-MK_PRUEBAS,192.168.78.53,22,admin,admin,Nubicom,backups_MK_NBC
+Nombre,Equipo,Puerto,Usuario,Contrasegna,Cliente,Ruta,Mensaje
+MK_PRUEBAS,192.168.78.53,22,admin,admin,Nubicom,backups_MK_NBC,OK
