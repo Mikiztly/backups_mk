@@ -18,6 +18,6 @@ CREATE TABLE Backup_logs (
 )
 
 # Prueba del prograna en python para manejar equipos MK
-01 00 * * * python3 ~/backups_mk/principal.py db_server.csv equipos.csv
+01 00 * * * python3 ~/backups_mk/principal.py ~/backups_mk/db_server.csv ~/backups_mk/equipos.csv
 
 /etc/init.d/cron reload
