@@ -1,3 +1,8 @@
+Averiguar python requests
+
+Instalar modulos:
+pip install schedule, paramiko, mysql-connector-python
+
 Nombre,Router,Puerto,Usuario,Password,Cliente,Ruta
 MK_PRUEBAS,192.168.78.53,22,admin,admin,Nubicom,backups_MK_NBC
 
@@ -17,7 +22,11 @@ CREATE TABLE Backup_logs (
 	Cliente VARCHAR(25) NOT NULL
 )
 
+Los 2 tienen que ser ejecutables: backups.sh y principal.py
+
+crontab -e
+
 # Prueba del prograna en python para manejar equipos MK
-01 00 * * * python3 ~/backups_mk/principal.py ~/backups_mk/db_server.csv ~/backups_mk/equipos.csv
+17 12 * * *     /home//dcasavilla/backups_mk/backups.sh >> /home/dcasavilla/backups_mk/backups_mk.log 2>&1
 
 /etc/init.d/cron reload

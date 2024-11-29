@@ -13,7 +13,7 @@ from paramiko.ssh_exception import AuthenticationException
 # Creacion del backup
 def backup_mk(Nombre: str, Equipo: str, Puerto: int, Usuario: str, Contrasegna: str, Ruta: str, Archivo_bkp: str, Mensaje: str):
   """
-  Crea un backup en el equipo Mikrotik y descarga los archivos.
+  Crea un backup en el equipo Mikrotik y descarga los archivos en el directorio home del usuario.
   Args:
     Nombre: El nombre del equipo.
     Equipo: La dirección IP o nombre de host del servidor remoto.
