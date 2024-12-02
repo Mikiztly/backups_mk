@@ -16,12 +16,12 @@ Se conecta a una DB en mariadb o mysql para guardar los resultados de los backup
 """
 
 # Importacion de librerias a utilizar
-import mysql, datetime
-# from mysql.connector import Error
+from datetime import date
 import mysql.connector
+from mysql.connector import Error
 
 # Con esta rutina verifico que esten creadas las tablas, si no existen las creo
-def Verifica_DB(Server: str, Usuario: str, Contrasegna: str, Base_Datos: str):
+def verifica_db(Server: str, Usuario: str, Contrasegna: str, Base_Datos: str):
   """
   Verifica que la base de datos esté configurada correctamente.
   Args:
@@ -52,14 +52,13 @@ def Verifica_DB(Server: str, Usuario: str, Contrasegna: str, Base_Datos: str):
       """)
     # Cerrar el cursor y la conexión
     Puntero.close()
-    Conexion.close()
     return True
   # Manejo de errores
-  except Conexion.error as Macana:
-    return f"Error al conectar a la base de datos:\n {Macana}"
+  except Error as Macana:
+    return f"Error al conectar a la base de datos:\n {Macana.msg}"
 
 # Guardo el resultado del backup en la DB
-def Resultado_Backup(Server: str, Usuario: str, Contrasegna: str, Base_Datos: str, Status: str, Fecha: datetime, Equipo: str, Cliente: str):
+def resultado_backup(Server: str, Usuario: str, Contrasegna: str, Base_Datos: str, Status: str, Fecha: date, Equipo: str, Cliente: str):
   """
   Guarda en la base de datos el resultado del backup.
   Args:
@@ -76,21 +75,20 @@ def Resultado_Backup(Server: str, Usuario: str, Contrasegna: str, Base_Datos: st
     Si hay algún error devuelve un mensaje de error con la descripción del mismo
   """
   # Primero verifico que la tabla exista
-  Resultado = Verifica_DB(Server, Usuario, Contrasegna, Base_Datos)
+  Resultado = verifica_db(Server, Usuario, Contrasegna, Base_Datos)
   try:
-    # Si esta todo bien con la DB guardo el resultado del backup
     if Resultado:
+      # Si esta todo bien con la DB guardo el resultado del backup
       Conexion = mysql.connector.connect(host=Server, user=Usuario, password=Contrasegna, database=Base_Datos)
       Puntero = Conexion.cursor()
       # Inserto los datos en la tabla Backup_logs
       sql = "INSERT INTO Backup_logs (Status, Fecha, Equipo, Cliente) VALUES (%s, %s, %s, %s)"
-      Valores = (Status, Fecha, Equipo, Cliente)
-      Puntero.execute(sql, Valores)
+      val = (Status, Fecha, Equipo, Cliente)
+      Puntero.execute(sql, val)
       # Confirmo los cambios
       Conexion.commit()
-      # Cierro el puntero y la conexion
+      # Cierro la conexion
       Puntero.close()
-      Conexion.close()
       return True
     else:
       return Resultado
