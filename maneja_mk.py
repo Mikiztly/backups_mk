@@ -37,7 +37,7 @@ class SSHConnector:
     try:
       self.client = paramiko.SSHClient()
       self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-      self.client.connect(self.hostname, port=self.port, username=self.username, password=self.password, look_for_keys=False)
+      self.client.connect(hostname=self.hostname, port=self.port, username=self.username, password=self.password, look_for_keys=False)
       return True
     # Las credenciales estan mal
     except paramiko.AuthenticationException as Macana:
@@ -56,20 +56,18 @@ class SSHConnector:
     else:
       return None
 
-# Si existe una conexion se cierra
-def Cierra_Conexiones(self):
-  """
-  Cierra la conexión ssh y sftp
-  """
-  try:
-    if self.client:
-      self.client.close()
-    if self.sftp_client:
-      self.sftp_client.close()
-    return True
-  # Error no controlado
-  except Exception as Macana:
-    return f"Error no controlado: {Macana}"
+  # Si existe una conexion se cierra
+  def Cierra_Conexiones(self):
+    """
+    Cierra la conexión ssh y sftp
+    """
+    try:
+      if self.client:
+        self.client.close()
+      return True
+    # Error no controlado
+    except Exception as Macana:
+      return f"Error no controlado: {Macana}"
 
 # Clase para crear un backup del equipo MK
 class BackupCreator:
@@ -97,15 +95,15 @@ class BackupCreator:
       # Si ocurrio algun error lo informo
       if Macana:
         raise Exception(f"Error al realizar el backup: {Macana}")
-      # Pausa 5 segundos
-      time.sleep(5)
+      # Pausa 2 segundos
+      time.sleep(2)
       stdin, stdout, stderr = self.ssh_client.exec_command(f"/export file={self.backup_name}")
       Macana = stderr.read().decode()
       # Si ocurrio algun error lo informo
       if Macana:
         raise Exception(f"Error al realizar el backup: {Macana}")
-      # Pausa 5 segundos
-      time.sleep(5)
+      # Pausa 2 segundos
+      time.sleep(2)
       # Si se hace correctamente el backup devuelvo True
       return True
     # Error no controlado
@@ -131,16 +129,11 @@ class BackupDownloader:
   def download_backup(self):
     try:
       for Ext in [".backup", ".rsc"]:
-        remote_file = self.remote_path + self.archivo + Ext
+        remote_file = self.remote_path + "/" + self.archivo + Ext
         local_file = self.archivo + Ext
-        stdin, stdout, stderr = self.sftp_client.get(remote_file, local_file)
-        time.sleep(5)
-        Macana = stderr.read().decode()
-        # Si ocurrio algun error lo informo
-        if Macana:
-          raise Exception(f"Error al realizar el backup: {Macana}")
-        # Pausa 5 segundos
-        time.sleep(5)
+        self.sftp_client.get(local_file, remote_file)
+        # Pausa 2 segundos
+        time.sleep(2)
       # Si se hace correctamente el backup devuelvo True
       return True
     # Error no controlado
@@ -158,9 +151,14 @@ class BackupCleaner:
   def Busca_Backups(self):
     try:
       # Lista archivos en el directorio actual
-      Archivos = self.sftp.listdir(path=".")
-      Backups = [Lista for Lista in Archivos if Lista.endswith(".backup", ".rsc")]
-      return Backups
+      Archivos = self.sftp_client.listdir(path='.')
+      # Guado solo los archivos .backup y .rsc para despues borrarlos
+      """ for Lista in Archivos:
+        if Lista.endswith(".backup") or Lista.endswith(".rsc"):
+          Lista_Borrar.append(Lista) """
+      Lista_Borrar = [Lista for Lista in Archivos if Lista.endswith(".backup") or Lista.endswith(".rsc")]
+      # Backups = [Lista for Lista in Archivos if Lista.endswith(".backup", ".rsc")]
+      return Lista_Borrar
     except Exception as Macana:
       return f"Error listando los archivos: {Macana}"
 
@@ -173,11 +171,8 @@ class BackupCleaner:
         # Se borran uno a uno los archivos
         for Archivo in Borrar:
           self.ssh_client.exec_command(f"rm {Archivo}")
-          # Pausa 5 segundos
-          time.sleep(5)
-      # Cierra las conexiones
-      self.sftp_client.close()
-      self.ssh_client.close()
+          # Pausa 2 segundos
+          time.sleep(2)
       return True
     except Exception as Macana:
       return f"Error limpiando archivos: {Macana}"
@@ -206,19 +201,20 @@ def Backup_MK(Nombre: str, Equipo: str, Puerto: int, Usuario: str, Contrasegna: 
     Conector = SSHConnector(Equipo, Puerto, Usuario, Contrasegna)
     Conexion_Result = Conector.Conecta_ssh()
     # Si no se realiza la conexion devuelvo el error
-    if not Conexion_Result == True:
+    if not Conexion_Result:
       return Conexion_Result
-    # Abro los clientes ssh y sftp
-    Cliente_ssh = Conector.Conecta_ssh()
-    Cliente_sftp = Conector.Conecta_sftp()
+    # Abro el cliente ssh
+    Cliente_ssh = Conector.client
     # Crea el backup
     Backup = BackupCreator(Cliente_ssh, Archivo_bkp)
     Backup_Result = Backup.Crea_Backup()
     # Si no se realiza el backup devuelvo el error
     if not Backup_Result == True:
       return Backup_Result
+    # #Llamada a la función para obtener el cliente sftp
+    Cliente_sftp = Conector.Conecta_sftp()
     # Descarga de archivos
-    Descarga = BackupDownloader(Cliente_sftp, Archivo_bkp, Ruta_Completa + "/" + Archivo_bkp)
+    Descarga = BackupDownloader(Cliente_sftp, Archivo_bkp, Ruta_Completa)
     Descarga_Result = Descarga.download_backup()
     # Si no puede descargar los archivos devuelvo el error
     if not Descarga_Result:
@@ -229,6 +225,10 @@ def Backup_MK(Nombre: str, Equipo: str, Puerto: int, Usuario: str, Contrasegna: 
     # Si no puede limpiar los archivos devuelvo el error
     if not Limpiar_Result:
       return Limpiar_Result
+    # Cierro las conexiones
+    Cierra_ssh = Conector.Cierra_Conexiones()
+    if not Cierra_ssh:
+      return Cierra_ssh
     # Devuelvo el mensaje pasado como parametro por que salio todo bien
     return Mensaje
   # Hubo algun error al crear los directorios

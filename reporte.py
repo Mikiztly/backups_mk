@@ -17,8 +17,10 @@ Se conecta a una DB en mariadb o mysql para guardar los resultados de los backup
 
 # Importacion de librerias a utilizar
 import mysql, datetime
-# from mysql.connector import Error
+
 import mysql.connector
+# from mysql.connector import Error
+# import mysql.connector
 
 # Con esta rutina verifico que esten creadas las tablas, si no existen las creo
 def Verifica_DB(Server: str, Usuario: str, Contrasegna: str, Base_Datos: str):
@@ -55,7 +57,7 @@ def Verifica_DB(Server: str, Usuario: str, Contrasegna: str, Base_Datos: str):
     Conexion.close()
     return True
   # Manejo de errores
-  except Conexion.error as Macana:
+  except Conexion.connector.Error as Macana:
     return f"Error al conectar a la base de datos:\n {Macana}"
 
 # Guardo el resultado del backup en la DB
@@ -95,13 +97,13 @@ def Resultado_Backup(Server: str, Usuario: str, Contrasegna: str, Base_Datos: st
     else:
       return Resultado
   # Manejo de errores
-  except Error as Macana:
-    return f"Error no manejado:\n {Macana.msg}"
+  except Conexion.connector.Error as Macana:
+    return f"Error no manejado:\n {Macana}"
 # FIN del guardado del resultado del backup
 
 # Programa principal para pruebas
 if __name__ == "__main__":
   import datetime
-  Resultado = resultado_backup("localhost", "strongsystems", "k8TY6&c7D4mW", "strong_db", "Prueba", datetime.datetime.now(), "Mikiztly", "Mikiztly")
+  Resultado = Resultado_Backup("localhost", "strongsystems", "k8TY6&c7D4mW", "strong_db", "Prueba", datetime.datetime.now(), "Mikiztly", "Mikiztly")
   # Imprimo el resultado para verificar que salio todo bien
   print(Resultado)
