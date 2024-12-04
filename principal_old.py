@@ -10,7 +10,7 @@ Se ejecuta pasando como argumentos dos archivos csv:
 2) El segundo csv contiene los datos de los equipos para hacer el backup, los datos que tiene son:
   Encabezados: ["Nombre", "Equipo", "Puerto", "Usuario", "Contrasegna", "Cliente", "Ruta"]
 
-Verifica la existencia de los archivos y después los abre para guardar cada campo en variables
+Verificar la existencia de los archivos y después abrirlos para guardar cada campo en variables
 """
 # Importacion de librerias a utilizar
 import sys, csv, archivos_csv, maneja_mk, reporte, datetime
@@ -39,7 +39,7 @@ try:
     print("  Encabezados requeridos: ['Nombre', 'Equipo', 'Puerto', 'Usuario', 'Contrasegna', 'Cliente', 'Ruta', 'Mensaje']")
     sys.exit(1)
 
-  # Abro el archivo pasado como primer parametro con los datos del servidor SQL
+  # Abro el archivo pasado como primer parametro
   with open(sys.argv[1], 'r', newline='', encoding='utf-8') as Tmp_DB:
     Tmp_Reg_DB = csv.reader(Tmp_DB)
     # Lee la primera fila para acceder a los campos por nombre
@@ -48,7 +48,7 @@ try:
     for XLoop in Tmp_Reg_DB:
       # Ya se hizo la verificacion del archivo por lo Obtengo los encabezados
       Datos_DB = dict(zip(Encabezados_DB, XLoop))
-      # Abro el archivo pasado como segundo parametro con los datos de los equipos a realizar backup
+      # Abro el archivo pasado como segundo parametro
       with open(sys.argv[2], 'r', newline='', encoding='utf-8') as Tmp_MK:
         Tmp_Reg_MK = csv.reader(Tmp_MK)
         # Lee la primera fila para acceder a los campos por nombre
@@ -60,9 +60,13 @@ try:
           # Ya se hizo la verificacion del archivo por lo Obtengo los encabezados
           Datos_MK = dict(zip(Encabezados_MK, YLoop))
           # Llamo a la funcion para hacer el backup y obtengo si se realizo bien el backup o que error tuvo
-          Resultado = maneja_mk.Backup_MK(Datos_MK.get("Nombre"), Datos_MK.get("Equipo"), Datos_MK.get("Puerto"), Datos_MK.get("Usuario"), Datos_MK.get("Contrasegna"), Datos_MK.get("Ruta"), Datos_MK.get("Nombre") + "-" + Fecha.strftime("%Y%m%d-%H%M%S"), Datos_MK.get("Mensaje"))
-          # Guardo el resultado en la DB
-          reporte.Resultado_Backup(Datos_DB.get("Servidor"), Datos_DB.get("Usuario"), Datos_DB.get("Contrasegna"), Datos_DB.get("Base_Datos"), Resultado, Fecha, Datos_MK.get("Nombre"), Datos_MK.get("Cliente"))
+          Resultado = maneja_mk.backup_mk(Datos_MK.get("Nombre"), Datos_MK.get("Equipo"), Datos_MK.get("Puerto"), Datos_MK.get("Usuario"), Datos_MK.get("Contrasegna"), Datos_MK.get("Ruta"), Datos_MK.get("Nombre") + "-" + Fecha.strftime("%Y%m%d-%H%M%S"), Datos_MK.get("Mensaje"))
+          # si me devuelve el mensaje pasado como argumento guardo el OK en la DB
+          if Resultado == Datos_MK.get("Mensaje"):
+            reporte.resultado_backup(Datos_DB.get("Servidor"), Datos_DB.get("Usuario"), Datos_DB.get("Contrasegna"), Datos_DB.get("Base_Datos"), Resultado, Fecha, Datos_MK.get("Nombre"), Datos_MK.get("Cliente"))
+          else:
+            reporte.resultado_backup(Datos_DB.get("Servidor"), Datos_DB.get("Usuario"), Datos_DB.get("Contrasegna"), Datos_DB.get("Base_Datos"), Resultado, Fecha, Datos_MK.get("Nombre"), Datos_MK.get("Cliente"))
+
 # Paso algo que no tuve en cuenta, lo informo
 except Exception as Macana:
   print(f"Error no manejado:\n {Macana}")
