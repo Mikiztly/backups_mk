@@ -1,0 +1,4 @@
+host:localhost
+user:strongsystems
+password:k8TY6&c7D4mW
+database:Prueba

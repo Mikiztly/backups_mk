@@ -5,6 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Depurador de Python: Archivo actual",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Depurador de Python: Archivo actual con 1 argumento",
       "type": "debugpy",
       "request": "launch",
@@ -22,6 +29,17 @@
       "console": "integratedTerminal",
       "args": [
         "db_server.csv",
+        "equipos.csv"
+      ]
+    },
+    {
+      "name": "Depurador de Python: Archivo actual con txt y csv",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "args": [
+        "db_server.txt",
         "equipos.csv"
       ]
     }
