@@ -36,9 +36,10 @@ class SSHConnector:
      """
     try:
       # Verifica si el equipo esta activo utilizando un ping
-      response = os.system(f"ping -c 1 {self.hostname}")
+      response = os.system(f"ping -c 2 {self.hostname}")
       if response != 0:
-        raise Exception(f"El equipo {self.hostname} no responde al ping.")
+        # raise Exception(f"El equipo {self.hostname} no responde al ping.")
+        return f"El equipo {self.hostname} no responde al ping."
       # Si se llega por ping se establece la conexion ssh
       self.client = paramiko.SSHClient()
       self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -52,7 +53,11 @@ class SSHConnector:
       return f"Error de conexión ssh: {Macana}"
     # Error no controlado
     except Exception as Macana:
-      return f"Error no controlado: {Macana}"
+      MacanaTXT = str(Macana)
+      if MacanaTXT.find("Unable to connect"):
+        return f"Error al conectar al puerto {self.port} del equipo {self.hostname}."
+      else:
+        return f"Error no controlado: {Macana}"
 
   # Crea una conexion sftp para manipular archivos
   def Conecta_sftp(self):

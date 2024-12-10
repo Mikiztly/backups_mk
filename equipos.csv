@@ -1,3 +1,3 @@
 Nombre,Equipo,Puerto,Usuario,Contrasegna,Cliente,Ruta,Mensaje
-MK_PRUEBAS1,192.168.78.53,22,admin,admin,Nubicom,backups_MK_NBC,OK
-MK_PRUEBAS2,192.168.78.53,22,admin,admin,Nubicom,backups_MK_NBC,OK
+diego-lab,192.168.78.53,22,admin,admin,Nubicom,backups_MK_NBC,OK
+R_INC_SLA_A_OLTSA,10.100.10.57,43717,ssh-backups-sur-a,931S8sWwL4bRXtVu,Nubicom,backups_MK_NBC,OK

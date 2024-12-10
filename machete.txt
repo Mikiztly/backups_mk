@@ -1,7 +1,7 @@
 Averiguar python requests
 
 Instalar modulos:
-pip install schedule, paramiko, mysql-connector-python
+pip install paramiko, mysql-connector-python
 
 Nombre,Router,Puerto,Usuario,Password,Cliente,Ruta
 MK_PRUEBAS,192.168.78.53,22,admin,admin,Nubicom,backups_MK_NBC

@@ -30,11 +30,14 @@ $(document).ready(function () {
     "columnDefs": [ {
         "targets": 0,
         "createdCell": function (td, cellData, rowData, row, col) {
-          if ( cellData == "NO" ) {
-            $(td).css('background-color', '#FF8A80')
-          };
+          // if ( cellData == "NO" ) {
+            // $(td).css('background-color', '#FF8A80')
+          // };
           if ( cellData == "OK" ) {
             $(td).css('background-color', '#1fe039')
+          }
+          else {
+            $(td).css('background-color', '#FF8A80')
           }
         }
       } ],
