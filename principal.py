@@ -43,8 +43,12 @@ try:
   Resultado = BaseDatos.conectar()
   # Si devuelve true es por que se conecto bien a la DB
   if Resultado:
-    # Verifico las tablas
-    BaseDatos.verifica_tablas()
+    # Verifico las tablas, si hay algun error lo informo
+    Verificacion = BaseDatos.verifica_tablas()
+    if  Verificacion != True:
+      # Si hay algun error lo informo y salgo
+      print(f"Error al conectar a la base de datos:\n {Verificacion}")
+      sys.exit(1)
   else:
     # Si hay algun error lo informo y salgo
     print(f"Error al conectar a la base de datos:\n {Resultado}")

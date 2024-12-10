@@ -35,6 +35,11 @@ class SSHConnector:
     Crea una conexion ssh con el equipo Mikrotik.
      """
     try:
+      # Verifica si el equipo esta activo utilizando un ping
+      response = os.system(f"ping -c 1 {self.hostname}")
+      if response != 0:
+        raise Exception(f"El equipo {self.hostname} no responde al ping.")
+      # Si se llega por ping se establece la conexion ssh
       self.client = paramiko.SSHClient()
       self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
       self.client.connect(hostname=self.hostname, port=self.port, username=self.username, password=self.password, look_for_keys=False)
@@ -128,6 +133,7 @@ class BackupDownloader:
 
   def download_backup(self):
     try:
+      # Descarga los archivos al directorio especificado
       for Ext in [".backup", ".rsc"]:
         remote_file = self.remote_path + "/" + self.archivo + Ext
         local_file = self.archivo + Ext
@@ -194,15 +200,13 @@ def Backup_MK(Nombre: str, Equipo: str, Puerto: int, Usuario: str, Contrasegna: 
     Si hay algún error devuelve un mensaje de error con la descripción del mismo
   """
   try:
-    Ruta_Completa = os.getcwd() + "/" + Ruta + "/" + Nombre
-    if not os.path.exists(Ruta_Completa):
-      os.makedirs(Ruta_Completa)
     # Se crea una conexion
     Conector = SSHConnector(Equipo, Puerto, Usuario, Contrasegna)
     Conexion_Result = Conector.Conecta_ssh()
     # Si no se realiza la conexion devuelvo el error
-    if not Conexion_Result:
+    if Conexion_Result != True:
       return Conexion_Result
+      # exit()
     # Abro el cliente ssh
     Cliente_ssh = Conector.client
     # Crea el backup
@@ -213,6 +217,10 @@ def Backup_MK(Nombre: str, Equipo: str, Puerto: int, Usuario: str, Contrasegna: 
       return Backup_Result
     # #Llamada a la función para obtener el cliente sftp
     Cliente_sftp = Conector.Conecta_sftp()
+    # Crea la carpeta si no existe
+    Ruta_Completa = os.getcwd() + "/" + Ruta + "/" + Nombre
+    if not os.path.exists(Ruta_Completa):
+      os.makedirs(Ruta_Completa)
     # Descarga de archivos
     Descarga = BackupDownloader(Cliente_sftp, Archivo_bkp, Ruta_Completa)
     Descarga_Result = Descarga.download_backup()

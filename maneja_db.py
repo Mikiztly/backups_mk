@@ -4,17 +4,17 @@ Creado por Mikiztly https://github.com/Mikiztly
 
 Se conecta a un servidor mariadb o mysql para guardar en una DB los datos del proceo de manejar equipos MK.
 
-Tabla Backup_logs:
+Tabla backup_logs:
 Guarda los resultados de los backups realizados a los equipos Mikrotik, la estructura es la siguiente:
 
-+---------+--------------+------+-----+---------+-------+
-| Field   | Type         | Null | Key | Default | Extra |
-+---------+--------------+------+-----+---------+-------+
-| Status  | varchar(150) | NO   |     | NULL    |       |
-| Fecha   | date         | NO   |     | NULL    |       |
-| Equipo  | varchar(25)  | NO   |     | NULL    |       |
-| Cliente | varchar(25)  | NO   |     | NULL    |       |
-+---------+--------------+------+-----+---------+-------+
++-------------+------+------+-----+---------+-------+
+| Field       | Type | Null | Key | Default | Extra |
++-------------+------+------+-----+---------+-------+
+| status      | text | NO   |     | NULL    |       |
+| date        | text | NO   |     | NULL    |       |
+| system_name | text | NO   |     | NULL    |       |
+| client      | text | NO   |     | NULL    |       |
++-------------+------+------+-----+---------+-------+
 
 """
 
@@ -73,11 +73,11 @@ class DatabaseManager:
     """
     try:
       self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Backup_Logs (
-          Status VARCHAR(150) NOT NULL,
-          Fecha DATE NOT NULL,
-          Equipo VARCHAR(25) NOT NULL,
-          Cliente VARCHAR(25) NOT NULL
+        CREATE TABLE IF NOT EXISTS backup_logs (
+          `status` TEXT NULL,
+          `date` TEXT NULL,
+          `system_name` TEXT NULL,
+          `client` TEXT NULL 
           )
       """)
       self.connection.commit()
@@ -95,9 +95,7 @@ class DatabaseManager:
       Si hay algún error devuelve un mensaje de error con la descripción del mismo
     """
     try:
-      sql = "INSERT INTO Backup_Logs (Status, Fecha, Equipo, Cliente) VALUES (%s, %s, %s, %s)"
-      # val = (Status, Fecha, Equipo, Cliente)
-      # self.cursor.execute(sql, val)
+      sql = "INSERT INTO backup_logs (status, date, system_name, client) VALUES (%s, %s, %s, %s)"
       self.cursor.execute(sql, Entrada)
       self.connection.commit()
       return True
@@ -110,7 +108,7 @@ if __name__ == "__main__":
   Servidor_sql = {
     "host": "localhost",
     "user": "strongsystems",
-    "password": "k8TY6&c7D4mW",
+    "password": "nada",
     "database": "Prueba"
   }
   
