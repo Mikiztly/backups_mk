@@ -88,7 +88,7 @@ python3 principal.py db_server.txt equipos.csv
 ```
 
 <h2 id="Carpeta html">Carpeta html</h2>
-En esta carpeta hay unos archivos php que muestra en una pagina los resultados de realizar los backups en una tabla, el servidor tiene que tener una configuración LAMP para mostrar la pagina de forma correcta. Copiar los archivos aen la carpeta<br><br>
+En esta carpeta hay unos archivos php que muestra en una pagina los resultados de realizar los backups en una tabla, el servidor tiene que tener una configuración LAMP para mostrar la pagina de forma correcta. Copiar los archivos en la carpeta<br><br>
 
 ```shell
 /var/www/
