@@ -3,10 +3,10 @@
 Creado por Mikiztly https://github.com/Mikiztly
 Por ahora verifica que exista un archivo csv y tenga los encabezados declarados en el argumento "Encabezados"
 """
-# Importacion de librerias a utilizar
+# Importación de librerías a utilizar
 import os, sys, csv
 
-# Verificacion de la existencia de los archivos
+# Verificación de la existencia de los archivos
 def verificar_archivo_csv(Archivo: str, Encabezados: list):
   """Verifica que el archivo CSV existe, es accesible y tiene los encabezados requeridos.
     Args:
@@ -29,7 +29,7 @@ def verificar_archivo_csv(Archivo: str, Encabezados: list):
     return True
   except Exception as Macana:
     return f"Error no manejado con el archivo CSV:\n {Macana}"
-# FIN de la funcion para verificar los archivos
+# FIN de la función para verificar los archivos
 
 # Programa principal para pruebas
 if __name__ == "__main__":

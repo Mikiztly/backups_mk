@@ -2,7 +2,7 @@
 """
 Creado por Mikiztly https://github.com/Mikiztly
 
-Se conecta a un servidor mariadb o mysql para guardar en una DB los datos del proceo de manejar equipos MK.
+Se conecta a un servidor mariadb o mysql para guardar en una DB los datos del proceso de manejar equipos MK.
 
 Tabla backup_logs:
 Guarda los resultados de los backups realizados a los equipos Mikrotik, la estructura es la siguiente:
@@ -18,7 +18,7 @@ Guarda los resultados de los backups realizados a los equipos Mikrotik, la estru
 
 """
 
-# Importacion de librerias a utilizar
+# Importación de librerías a utilizar
 import mysql.connector
 from mysql.connector import Error
 
@@ -49,7 +49,7 @@ class DatabaseManager:
 
   def cerrar(self):
     """ 
-    Si hay un cursor y/o una coneccion abierta los cierra
+    Si hay un cursor y/o una conexión abierta los cierra
     Devuelve:
       True si se cierra correctamente.
       Si hay algún error devuelve un mensaje de error con la descripción del mismo.
@@ -65,7 +65,7 @@ class DatabaseManager:
 
   def verifica_tablas(self):
     """ 
-    Crea la tabla segun los parametros especificados.
+    Crea la tabla según los parámetros especificados.
     Devuelve:
       True si se crea correctamente
       Si hay algún error devuelve un mensaje de error con la descripción del mismo

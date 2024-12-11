@@ -5,7 +5,7 @@ Creado por Mikiztly https://github.com/Mikiztly
 Se ejecuta pasando como argumentos dos archivos:
 
 1) Un txt con los datos para conectarse al servidor sql para guardar los informes de los backups, los datos que tiene son:
-  host:localhServidor de la base de datos.ost
+  host:Servidor de la base de datos.ost
   user:Usuario de la base de datos.
   password:Contraseña de la base de datos.
   database:Nombre de la base de datos.
@@ -13,16 +13,16 @@ Se ejecuta pasando como argumentos dos archivos:
 2) El segundo tiene que ser un archivo csv que contenga los datos de los equipos para hacer el backup, los datos que tiene son:
   Encabezados: ["Nombre", "Equipo", "Puerto", "Usuario", "Contrasegna", "Cliente", "Ruta"]
 
-Verifica la existencia de los archivos y después los abrire para guardar cada campo en variables
+Verifica la existencia de los archivos y después los abriré para guardar cada campo en variables
 """
-# Importacion de librerias a utilizar
+# Importación de librerías a utilizar
 import sys, csv, archivos_csv, maneja_mk, maneja_db, datetime
 
-# Por si acaso tambien hago captura de errores
+# Por si acaso también hago captura de errores
 try:
-  # Verificacion que se pasen los dos argumentos
+  # Verificación que se pasen los dos argumentos
   if len(sys.argv) != 3:
-    # Si hay algun error lo informo y salgo
+    # Si hay algún error lo informo y salgo
     print("Uso: python script.py <Base_Datos.csv> <Equipos.csv>")
     sys.exit(1)
 
@@ -43,21 +43,21 @@ try:
   Resultado = BaseDatos.conectar()
   # Si devuelve true es por que se conecto bien a la DB
   if Resultado:
-    # Verifico las tablas, si hay algun error lo informo
+    # Verifico las tablas, si hay algún error lo informo
     Verificacion = BaseDatos.verifica_tablas()
     if  Verificacion != True:
-      # Si hay algun error lo informo y salgo
+      # Si hay algún error lo informo y salgo
       print(f"Error al conectar a la base de datos:\n {Verificacion}")
       sys.exit(1)
   else:
-    # Si hay algun error lo informo y salgo
+    # Si hay algún error lo informo y salgo
     print(f"Error al conectar a la base de datos:\n {Resultado}")
     sys.exit(1)
   
   # Verifico que el segundo archivo sea el correcto para obtener los datos de los equipos
   Resultado= archivos_csv.verificar_archivo_csv(sys.argv[2],["Nombre", "Equipo", "Puerto", "Usuario", "Contrasegna", "Cliente", "Ruta", "Mensaje"])
   if Resultado != True:
-    # Si hay algun error lo informo y salgo
+    # Si hay algún error lo informo y salgo
     print(Resultado)
     print("  Encabezados requeridos: ['Nombre', 'Equipo', 'Puerto', 'Usuario', 'Contrasegna', 'Cliente', 'Ruta', 'Mensaje']")
     sys.exit(1)
@@ -71,9 +71,9 @@ try:
     for YLoop in Tmp_Reg_MK:
       # Obtengo la fecha y hora actual para armar el nombre del archivo
       Fecha = datetime.datetime.now()
-      # Ya se hizo la verificacion del archivo por lo Obtengo los encabezados
+      # Ya se hizo la verificación del archivo por lo Obtengo los encabezados
       Datos_MK = dict(zip(Encabezados_MK, YLoop))
-      # Llamo a la funcion para hacer el backup y obtengo si se realizo bien el backup o que error tuvo
+      # Llamo a la función para hacer el backup y obtengo si se realizo bien el backup o que error tuvo
       Resultado = maneja_mk.Backup_MK(Datos_MK.get("Nombre"), Datos_MK.get("Equipo"), Datos_MK.get("Puerto"), Datos_MK.get("Usuario"), Datos_MK.get("Contrasegna"), Datos_MK.get("Ruta"), Datos_MK.get("Nombre") + "-" + Fecha.strftime("%Y%m%d-%H%M%S"), Datos_MK.get("Mensaje"))
       # Guardo el resultado en la DB
       BaseDatos.Backup_Logs([Resultado, Fecha, Datos_MK.get("Nombre"), Datos_MK.get("Cliente")])

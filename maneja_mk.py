@@ -2,18 +2,18 @@
 """
 Creado por Mikiztly https://github.com/Mikiztly
 
-Por ahora hace un backup del equipo que se paso con los parametros y descarga dos archivos ( .backup y .rsc) en la ruta especificada en el argumento "Ruta"
-Los parametros se deben pasar como un diccionario donde las claves deben ser:
+Por ahora hace un backup del equipo que se paso con los parámetros y descarga dos archivos ( .backup y .rsc) en la ruta especificada en el argumento "Ruta"
+Los parámetros se deben pasar como un diccionario donde las claves deben ser:
 ["Nombre", "Equipo", "Puerto", "Usuario", "Contrasegna", "Cliente", "Ruta"]
 """
-# Importacion de librerias a utilizar
+# Importación de librerías a utilizar
 import os, paramiko, time
 
-# Clase para la conexion ssh al equipo MK
+# Clase para la conexión ssh al equipo MK
 class SSHConnector:
   def __init__(self, Equipo: str, Puerto: int, Usuario: str, Contrasegna: str):
     """ 
-    Crea una conexion ssh con el equipo Mikrotik.
+    Crea una conexión ssh con el equipo Mikrotik.
     Args:
       Equipo: La dirección IP o nombre de host del equipo remoto.
       Puerto: El puerto SSH (por defecto 22).
@@ -29,10 +29,10 @@ class SSHConnector:
     self.password = Contrasegna
     self.client = None
 
-    # Se establece la conexion ssh
+    # Se establece la conexión ssh
   def Conecta_ssh(self):
     """ 
-    Crea una conexion ssh con el equipo Mikrotik.
+    Crea una conexión ssh con el equipo Mikrotik.
      """
     try:
       # Verifica si el equipo esta activo utilizando un ping
@@ -40,12 +40,12 @@ class SSHConnector:
       if response != 0:
         # raise Exception(f"El equipo {self.hostname} no responde al ping.")
         return f"El equipo {self.hostname} no responde al ping."
-      # Si se llega por ping se establece la conexion ssh
+      # Si se llega por ping se establece la conexión ssh
       self.client = paramiko.SSHClient()
       self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
       self.client.connect(hostname=self.hostname, port=self.port, username=self.username, password=self.password, look_for_keys=False)
       return True
-    # Las credenciales estan mal
+    # Las credenciales están mal
     except paramiko.AuthenticationException as Macana:
       return f"Error de autenticación ssh: {Macana}"
     # Error de ssh
@@ -59,14 +59,14 @@ class SSHConnector:
       else:
         return f"Error no controlado: {Macana}"
 
-  # Crea una conexion sftp para manipular archivos
+  # Crea una conexión sftp para manipular archivos
   def Conecta_sftp(self):
     if self.client:
       return self.client.open_sftp()
     else:
       return None
 
-  # Si existe una conexion se cierra
+  # Si existe una conexión se cierra
   def Cierra_Conexiones(self):
     """
     Cierra la conexión ssh y sftp
@@ -83,7 +83,7 @@ class SSHConnector:
 class BackupCreator:
   def __init__(self, ssh_client, Archivo_bkp: str):
     """ 
-    Crea un backup de la configuracion de un equipo Mikrotik.
+    Crea un backup de la configuración de un equipo Mikrotik.
     Args:
       ssh_client: El cliente ssh para la conexión.
       Archivo_bkp: El nombre del archivo de backup a crear.
@@ -96,20 +96,20 @@ class BackupCreator:
 
   def Crea_Backup(self):
     """ 
-    Bace un backup del equipo Mikrotik, el resultado es la creacion de dos arvhios .backup y .rsc con el nombre establecido en la variable "Archivo_bkp"
+    Hace un backup del equipo Mikrotik, el resultado es la creación de dos archivos (.backup y .rsc) con el nombre establecido en la variable "Archivo_bkp"
      """
     try:
       # Crea el backup utilizando variables (stdin, stdout, stderr) para capturar si ocurren errores
       stdin, stdout, stderr = self.ssh_client.exec_command(f"/system backup save dont-encrypt=yes name={self.backup_name}")
       Macana = stderr.read().decode()
-      # Si ocurrio algun error lo informo
+      # Si ocurrió algún error lo informo
       if Macana:
         raise Exception(f"Error al realizar el backup: {Macana}")
       # Pausa 2 segundos
       time.sleep(2)
       stdin, stdout, stderr = self.ssh_client.exec_command(f"/export file={self.backup_name}")
       Macana = stderr.read().decode()
-      # Si ocurrio algun error lo informo
+      # Si ocurrió algún error lo informo
       if Macana:
         raise Exception(f"Error al realizar el backup: {Macana}")
       # Pausa 2 segundos
@@ -125,7 +125,7 @@ class BackupDownloader:
     """ 
     Descarga los archivos creados al hacer el backup del equipo Mikrotik.
     Args:
-      Cliente_sftp: Una conexion establecida por ssh realizada con la clase SSHConnector.
+      Cliente_sftp: Una conexión establecida por ssh realizada con la clase SSHConnector.
       Archivo_bkp: el nombre del archivo de backup a crear.
       Ruta: La carpeta del servidor donde se copiaran los archivos.
     Devuelve:
@@ -154,7 +154,7 @@ class BackupCleaner:
   """ 
   Limpia los archivos .backup y .rsc del equipo Mikrotik.
    """
-  # Borrar todos los archivos .backup y .rsc del equipo mikrotik
+  # Borrar todos los archivos .backup y .rsc del equipo Mikrotik
   def __init__(self, ssh_client, sftp_client):
     self.ssh_client = ssh_client
     self.sftp_client = sftp_client
@@ -163,7 +163,7 @@ class BackupCleaner:
     try:
       # Lista archivos en el directorio actual
       Archivos = self.sftp_client.listdir(path='.')
-      # Guado solo los archivos .backup y .rsc para despues borrarlos
+      # Guado solo los archivos .backup y .rsc para después borrarlos
       """ for Lista in Archivos:
         if Lista.endswith(".backup") or Lista.endswith(".rsc"):
           Lista_Borrar.append(Lista) """
@@ -205,10 +205,10 @@ def Backup_MK(Nombre: str, Equipo: str, Puerto: int, Usuario: str, Contrasegna: 
     Si hay algún error devuelve un mensaje de error con la descripción del mismo
   """
   try:
-    # Se crea una conexion
+    # Se crea una conexión
     Conector = SSHConnector(Equipo, Puerto, Usuario, Contrasegna)
     Conexion_Result = Conector.Conecta_ssh()
-    # Si no se realiza la conexion devuelvo el error
+    # Si no se realiza la conexión devuelvo el error
     if Conexion_Result != True:
       return Conexion_Result
       # exit()
@@ -242,9 +242,9 @@ def Backup_MK(Nombre: str, Equipo: str, Puerto: int, Usuario: str, Contrasegna: 
     Cierra_ssh = Conector.Cierra_Conexiones()
     if not Cierra_ssh:
       return Cierra_ssh
-    # Devuelvo el mensaje pasado como parametro por que salio todo bien
+    # Devuelvo el mensaje pasado como parámetro por que salio todo bien
     return Mensaje
-  # Hubo algun error al crear los directorios
+  # Hubo algún error al crear los directorios
   except OSError as Macana:
     return f"Error al crear directorios: {Macana}"
   # Error no controlado
