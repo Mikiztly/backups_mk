@@ -8,7 +8,7 @@ import os, sys, csv
 
 # Verificacion de la existencia de los archivos
 def verificar_archivo_csv(Archivo: str, Encabezados: list):
-  """Verifica el archivos CSV existe, es accesible y tiene los encabezados requeridos.
+  """Verifica que el archivo CSV existe, es accesible y tiene los encabezados requeridos.
     Args:
       Archivo: La ruta al archivo CSV
       Encabezados: Una lista de encabezados requeridos.

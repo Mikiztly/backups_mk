@@ -1,7 +1,7 @@
 Averiguar python requests
 
 Instalar modulos:
-pip install paramiko, mysql-connector-python
+pip install paramiko mysql-connector-python
 
 Nombre,Router,Puerto,Usuario,Password,Cliente,Ruta
 MK_PRUEBAS,192.168.78.53,22,admin,admin,Nubicom,backups_MK_NBC
@@ -27,6 +27,8 @@ Los 2 tienen que ser ejecutables: backups.sh y principal.py
 crontab -e
 
 # Prueba del prograna en python para manejar equipos MK
-17 12 * * *     /home//dcasavilla/backups_mk/backups.sh >> /home/dcasavilla/backups_mk/backups_mk.log 2>&1
+00 01 * * *     /home/dcasavilla/backups_mk/backups.sh >> /home/dcasavilla/backups_mk/backups_mk.log 2>&1
+
+00 01 * * *     python3 /home/dcasavilla/backups_mk/principal.py /home/dcasavilla/backups_mk/db_server.txt /home/dcasavilla/backups_mk/equipos.csv
 
 /etc/init.d/cron reload

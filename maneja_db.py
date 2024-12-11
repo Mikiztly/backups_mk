@@ -19,7 +19,6 @@ Guarda los resultados de los backups realizados a los equipos Mikrotik, la estru
 """
 
 # Importacion de librerias a utilizar
-from datetime import date
 import mysql.connector
 from mysql.connector import Error
 
@@ -33,10 +32,10 @@ class DatabaseManager:
     """
     Conecta a la base de datos mediante un diccionario con los siguientes campos:
     Args:
-      Server: Servidor de la base de datos.
-      Usuario: Usuario de la base de datos.
-      Contrasegna: Contraseña de la base de datos.
-      Base_Datos: Nombre de la base de datos.
+      host: Servidor de la base de datos.
+      user: Usuario de la base de datos.
+      password: Contraseña de la base de datos.
+      database: Nombre de la base de datos.
     Devuelve:
       True si se conecta correctamente a la base de datos.
       Si hay algún error devuelve un mensaje de error con la descripción del mismo
