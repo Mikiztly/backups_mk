@@ -78,8 +78,8 @@ Ese es el archivo que se ejecuta para realizar el backup, se deben pasar como ar
 Con esto se crean los backups a la 1:00 AM cada día y se guardan en la carpeta home del usuario, en este caso dcasavilla con la ruta especificada en el archivo equipos.csv, por ejemplo:<br>
 
 ```shell
-/home/dcasavilla/backups_NBC
-/home/dcasavilla/Sigar
+/home/dcasavilla/backups_NBC/diego-lab
+/home/dcasavilla/backups_SIGAR/Sigar
 ```
 
 Se puede ejecutar de forma manual (estando en la carpeta de los archivos) con el siguiente comando:
